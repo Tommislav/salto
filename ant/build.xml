@@ -1,0 +1,78 @@
+<project name="Salto-lib" basedir="." default="unittest">
+	
+	<property file="build.properties" />
+	
+	
+	<taskdef resource="flexTasks.tasks" >
+		<classpath>
+			<pathelement path="${FLEX_HOME}/ant/lib/flexTasks.jar"/> 
+			<fileset dir="${FLEX_HOME}/ant/lib/"> 
+				<include name="**/*.jar"/>
+			</fileset> 
+		</classpath>
+	</taskdef>
+	<!--
+	<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+	-->
+	
+	<property name="PROJECT_ROOT" value="${project.dir}"/>
+	
+	<macrodef name="compile">
+		<attribute name="src" default="NOT SET"/>
+		<attribute name="output" default="NOT SET"/>
+		<attribute name="debug" default="true" />
+		<attribute name="version" default="main" />
+		<sequential>
+			
+			<echo>######################################</echo>
+			<echo>####### COMPILE SALTO-LIB SWF ########</echo>
+			<echo>######################################</echo>
+			<echo>###</echo>
+			<echo>### OUTPUT: '@{output}'</echo>
+			<echo>###</echo>
+			<echo>### VERSION: '@{version}'</echo>
+			<echo>### DEBUG: @{debug}</echo>
+			<echo>###</echo>
+			<echo>### FLEX_HOME ${FLEX_HOME}</echo>
+			<echo>### flexTasks.jar ${FLEX_HOME}/ant/lib/flexTasks.jar</echo>
+			<echo>###</echo>
+			<echo>######################################</echo>
+			<echo>###</echo>
+			
+			<mxmlc file="${PROJECT_ROOT}/test/Main.mxml" use-network="false" debug="@{debug}" keep-generated-actionscript="false" output="${PROJECT_ROOT}/bin/@{output}" incremental="true" benchmark="false" verbose-stacktraces="@{debug}" static-link-runtime-shared-libraries="true" >
+				<target-player>10.1</target-player>
+				
+				<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+				<load-config filename="${PROJECT_ROOT}/obj/asbindingConfig.xml"/>
+				
+				<!-- ## COMPILER CONSTANTS ## -->
+				<!--<define name="CONFIG::version" value="'@{version}'" />-->
+				
+				<!-- ## SWCs ## -->
+				
+				<!-- ## INCLUDE LIBRARIES ## -->
+				
+				<!-- ## EXCLUDE LIBRARIES ## -->
+				
+			</mxmlc>
+		</sequential>
+	</macrodef>
+	
+	
+	
+	
+	
+	
+	
+	<target name="unittest">
+		<sequential>
+			<compile output="unittest.swf" />
+			
+			<exec executable="${flash.player}">
+				<arg line="${PROJECT_ROOT}/bin/unittest.swf" />
+			</exec>
+		</sequential>
+	</target>
+	
+	
+</project>
